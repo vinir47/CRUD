@@ -38,7 +38,7 @@ $error = filter_input(INPUT_GET, 'error');
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Alunos</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
 </head>
 
 <body>
