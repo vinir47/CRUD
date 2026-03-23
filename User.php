@@ -35,6 +35,19 @@ class User
     }
 
     /**
+     * Busca um usuário pelo e-mail.
+     * * @param string $email
+     * @return array|false
+     */
+    public function findByEmail(string $email): array|false
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+        $stmt->execute([":email" => $email]);
+
+        return $stmt->fetch();
+    }
+
+    /**
      * Retorna todos os usuários cadastrados,
      * ordenados pelo ID em ordem crescente.
      *
@@ -75,6 +88,11 @@ class User
      */
     public function create(string $name, string $email, string $document): bool
     {
+        
+        if ($this->findByEmail($email)) {
+        return false; 
+        }
+
         $stmt = $this->pdo->prepare("
             INSERT INTO users (name, email, document)
             VALUES (:name, :email, :document)

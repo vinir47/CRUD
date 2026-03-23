@@ -5,6 +5,8 @@
  */
 require __DIR__ . "/connect.php";
 
+require_once "models/User.php";
+
 /**
  * Captura os dados enviados pelo formulário via método POST.
  *
@@ -16,6 +18,31 @@ require __DIR__ . "/connect.php";
 $name = trim($_POST["name"] ?? "");
 $email = trim($_POST["email"] ?? "");
 $document = trim($_POST["document"] ?? "");
+
+/**
+ * @var mixed
+ * Verifica se os dados inseridos já existem
+ */
+$name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
+$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+$document = filter_input(INPUT_POST, 'document', FILTER_SANITIZE_SPECIAL_CHARS);
+
+if ($name && $email && $document) {
+    $user = new User();
+
+    if ($user->findByEmail($email)) {
+        header("Location: cadastrar.php?error=email_exists");
+        exit;
+    }
+
+    if ($user->create($name, $email, $document)) {
+        header("Location: index.php?success=1");
+        exit;
+    }
+}
+
+header("Location: cadastrar.php?error=generic");
+exit;
 
 /**
  * Validação básica:
